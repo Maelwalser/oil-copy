@@ -35,12 +35,12 @@ Once installed, the plugin sets up keymaps within any oil buffer:
 
 - Normal Mode:
 
-Place your cursor on a file and press <leader>cf (or your custom keymap) to copy its contents.
+  - Place your cursor on a file and press <leader>cf (or your custom keymap) to copy its contents.
 
-Place your cursor on a directory and press <leader>cf to copy the recursive contents of all files within that directory.
+  - Place your cursor on a directory and press <leader>cf to copy the recursive contents of all files within that directory.
 
 - Visual Mode:
 
-Select one or more files and/or directories and press <leader>cf.
+  - Select one or more files and/or directories and press <leader>cf.
 
-This will copy the contents of all selected files and the recursive contents of all files within any selected directories.
+  - This will copy the contents of all selected files and the recursive contents of all files within any selected directories.
