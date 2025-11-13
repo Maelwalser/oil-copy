@@ -83,7 +83,7 @@ function M.copy_entry_contents()
     local filename = vim.fn.fnamemodify(file_path, ":t")
     vim.notify("Copied content of " .. filename, vim.log.levels.INFO)
 
-  -- Handle Other Types
+  --  Handle Other Types
   else
     vim.notify("Cannot copy contents of type: " .. entry.type, vim.log.levels.WARN)
   end
