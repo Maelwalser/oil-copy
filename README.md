@@ -19,7 +19,7 @@ Here is an example using lazy.nvim.
 
 ```lua
 {
-  "maelwalser/oil-copy",
+  "maelwalser/oil-copy.nvim",
   dependencies = { "stevearc/oil.nvim" },
   opts = {
     -- You can customize the keymap here
