@@ -101,4 +101,92 @@ function M.copy_entry_contents()
   end
 end
 
+---
+--- Copies the contents of multiple selected entries (visual mode)
+---
+function M.copy_visual_selection()
+  local oil = require("oil")
+  
+  -- Get visual selection range
+  local start_line = vim.fn.line("'<")
+  local end_line = vim.fn.line("'>")
+  
+  -- Get the current Oil directory
+  local dir = oil.get_current_dir()
+  if not dir then
+    vim.notify("Could not determine current directory", vim.log.levels.ERROR)
+    return
+  end
+  
+  local all_content = ""
+  local file_count = 0
+  local processed_entries = {}
+  
+  -- Helper function to read a single file and add to content
+  local function add_file_content(file_path, include_comment)
+    if vim.fn.filereadable(file_path) == 1 then
+      local read_ok, content_lines = pcall(vim.fn.readfile, file_path)
+      if read_ok then
+        if include_comment then
+          all_content = all_content .. "-- " .. file_path .. "\n\n"
+        end
+        all_content = all_content .. table.concat(content_lines, "\n") .. "\n\n"
+        file_count = file_count + 1
+        return true
+      else
+        vim.notify("Could not read file: " .. tostring(file_path), vim.log.levels.WARN)
+      end
+    end
+    return false
+  end
+  
+  -- Recursive function to traverse directories
+  local function traverse_directory(path)
+    local ok, items = pcall(vim.fn.readdir, path)
+    if not ok then
+      vim.notify("Could not read directory: " .. tostring(path), vim.log.levels.ERROR)
+      return
+    end
+    
+    for _, item in ipairs(items) do
+      if item ~= "." and item ~= ".." then
+        local item_path = path .. "/" .. item
+        if vim.fn.isdirectory(item_path) == 1 then
+          traverse_directory(item_path)
+        else
+          add_file_content(item_path, true)
+        end
+      end
+    end
+  end
+  
+  -- Iterate through each line in the visual selection
+  for line_num = start_line, end_line do
+    vim.api.nvim_win_set_cursor(0, {line_num, 0})
+    local entry = oil.get_cursor_entry()
+    
+    if entry and entry.name and entry.name ~= ".." then
+      local full_path = dir:gsub("/$", "") .. "/" .. entry.name
+      
+      -- Skip if we've already processed this entry
+      if not processed_entries[full_path] then
+        processed_entries[full_path] = true
+        
+        if entry.type == "directory" then
+          traverse_directory(full_path)
+        elseif entry.type == "file" then
+          add_file_content(full_path, true) -- Always include comment for multiple files
+        end
+      end
+    end
+  end
+  
+  if all_content ~= "" then
+    vim.fn.setreg("+", all_content)
+    vim.notify("Copied content of " .. file_count .. " files to clipboard", vim.log.levels.INFO)
+  else
+    vim.notify("No readable files found in selection", vim.log.levels.WARN)
+  end
+end
+
 return M
