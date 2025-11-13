@@ -25,6 +25,9 @@ Here is an example using lazy.nvim.
     -- You can customize the keymap here
     -- keymap = "<leader>p" -- Uncomment and change to your preferred key
   },
+  config = function()
+    require("oil-copy").setup()
+  end,
 }
 ```
 
