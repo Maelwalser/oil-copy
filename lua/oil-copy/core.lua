@@ -103,13 +103,11 @@ end
 
 ---
 --- Copies the contents of multiple selected entries (visual mode)
+--- @param start_line number The starting line of the visual selection
+--- @param end_line number The ending line of the visual selection
 ---
-function M.copy_visual_selection()
+function M.copy_visual_selection(start_line, end_line)
   local oil = require("oil")
-  
-  -- Get visual selection range
-  local start_line = vim.fn.line("'<")
-  local end_line = vim.fn.line("'>")
   
   -- Get the current Oil directory
   local dir = oil.get_current_dir()

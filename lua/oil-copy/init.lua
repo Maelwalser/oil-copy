@@ -22,7 +22,18 @@ function M.setup(opts)
       
       -- Visual mode: copy multiple entries
       vim.keymap.set("v", keymap, function()
-        core.copy_visual_selection()
+        -- Get the visual selection range before calling the function
+        local start_line = vim.fn.line("v")
+        local end_line = vim.fn.line(".")
+        
+        -- Ensure start_line is before end_line
+        if start_line > end_line then
+          start_line, end_line = end_line, start_line
+        end
+        
+        core.copy_visual_selection(start_line, end_line)
+        -- Exit visual mode after copying
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
       end, {
         buffer = args.buf,
         desc = visual_keymap_desc,
