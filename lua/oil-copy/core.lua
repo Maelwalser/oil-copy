@@ -119,7 +119,7 @@ function M.copy_visual_selection(start_line, end_line)
   -- Save current cursor position
   local original_pos = vim.api.nvim_win_get_cursor(0)
   
-  -- First, collect all entries to process
+  -- collect all entries to process
   local entries_to_process = {}
   local buf = vim.api.nvim_get_current_buf()
   local line_count = vim.api.nvim_buf_line_count(buf)
@@ -199,7 +199,7 @@ function M.copy_visual_selection(start_line, end_line)
       if entry.type == "directory" then
         traverse_directory(entry.path)
       elseif entry.type == "file" then
-        add_file_content(entry.path, true) -- Always include comment for multiple files
+        add_file_content(entry.path, true) -- include comment for multiple files
       end
     end
   end
